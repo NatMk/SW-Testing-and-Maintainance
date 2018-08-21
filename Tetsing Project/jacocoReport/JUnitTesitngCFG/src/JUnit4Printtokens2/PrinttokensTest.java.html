@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>PrinttokensTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JUnitTesitngCFG (May 3, 2018 5:55:13 PM)</a> &gt; <a href="../../index.html" class="el_group">JUnitTesitngCFG</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">JUnit4Printtokens2</a> &gt; <span class="el_source">PrinttokensTest.java</span></div><h1>PrinttokensTest.java</h1><pre class="source lang-java linenums">package JUnit4Printtokens2;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
+
+import java.io.*;
+
+<span class="fc" id="L12">public class PrinttokensTest {</span>
+	private Printtokens2 obj;
+	private File testFile;
+<span class="fc" id="L15">	private String nameFile = &quot;aa.tmp&quot;;</span>
+<span class="fc" id="L16">	private String[] content = new String[]{&quot;first2\n&quot;, &quot;second\n&quot;, &quot;123&quot;};</span>
+<span class="fc" id="L17">	private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();</span>
+<span class="fc" id="L18">	private final ByteArrayOutputStream errContent = new ByteArrayOutputStream();</span>
+	@Before
+	public void setUp() {
+<span class="fc" id="L21">		obj = new Printtokens2();</span>
+<span class="fc" id="L22">		testFile = new File(nameFile);</span>
+<span class="fc" id="L23">		System.setOut(new PrintStream(outContent));</span>
+<span class="fc" id="L24">		System.setErr(new PrintStream(errContent));</span>
+<span class="fc" id="L25">	}</span>
+	@After
+	public void shutDown() {
+<span class="fc" id="L28">		System.setOut(System.out);</span>
+<span class="fc" id="L29">		System.setErr(System.err);</span>
+<span class="fc" id="L30">	}</span>
+
+	@Test
+	public void test_open_character_stream() {
+<span class="fc" id="L34">		try (BufferedReader bw = obj.open_character_stream(nameFile)) {</span>
+<span class="fc" id="L35">			Assert.assertNotNull(bw);</span>
+<span class="fc" id="L36">			assertEquals(bw.readLine(), &quot;@edwe2236725&quot;);</span>
+<span class="pc bpc" id="L37" title="7 of 8 branches missed.">		} catch (IOException e) {</span>
+<span class="nc" id="L38">			fail(e.getMessage());</span>
+		}
+<span class="fc" id="L40">		BufferedReader bw = obj.open_character_stream(&quot;undef&quot;);</span>
+<span class="fc" id="L41">		Assert.assertNull(bw);</span>
+<span class="fc" id="L42">		assertEquals(&quot;The file undef doesn't exists\n&quot;, outContent.toString());</span>
+<span class="fc" id="L43">	}</span>
+	@Test
+	public void test_open_token_stream() {
+<span class="fc" id="L46">		try (BufferedReader bw = obj.open_token_stream(nameFile)) {</span>
+<span class="fc" id="L47">			Assert.assertNotNull(bw);</span>
+<span class="fc" id="L48">			assertEquals(bw.readLine(), &quot;@edwe2236725&quot;);</span>
+<span class="pc bpc" id="L49" title="7 of 8 branches missed.">		} catch (IOException e) {</span>
+<span class="nc" id="L50">			fail(e.getMessage());</span>
+		}
+<span class="fc" id="L52">		BufferedReader bw = obj.open_token_stream(&quot;undef&quot;);</span>
+<span class="fc" id="L53">		Assert.assertNull(bw);</span>
+<span class="fc" id="L54">		assertEquals(&quot;The file undef doesn't exists\n&quot;, outContent.toString());</span>
+<span class="fc" id="L55">	}</span>
+	@Test
+	public void test_is_spec_symbol() {
+<span class="fc" id="L58">		char[] chars = new char[]{'(', ')', '[', ']', '\'', '`', ','};</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">		for (char c : chars) {</span>
+<span class="fc" id="L60">			Assert.assertTrue(Printtokens2.is_spec_symbol(c));</span>
+		}
+<span class="fc" id="L62">		Assert.assertFalse(Printtokens2.is_spec_symbol('c'));</span>
+<span class="fc" id="L63">	}</span>
+	@Test
+	public void test_print_spec_symbol() {
+<span class="fc" id="L66">		Printtokens2.print_spec_symbol(&quot;(&quot;);</span>
+<span class="fc" id="L67">		assertEquals(&quot;lparen.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L68">		outContent.reset();</span>
+<span class="fc" id="L69">		Printtokens2.print_spec_symbol(&quot;)&quot;);</span>
+<span class="fc" id="L70">		assertEquals(&quot;rparen.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L71">		outContent.reset();</span>
+<span class="fc" id="L72">		Printtokens2.print_spec_symbol(&quot;[&quot;);</span>
+<span class="fc" id="L73">		assertEquals(&quot;lsquare.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L74">		outContent.reset();</span>
+<span class="fc" id="L75">		Printtokens2.print_spec_symbol(&quot;]&quot;);</span>
+<span class="fc" id="L76">		assertEquals(&quot;rsquare.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L77">		outContent.reset();</span>
+<span class="fc" id="L78">		Printtokens2.print_spec_symbol(&quot;'&quot;);</span>
+<span class="fc" id="L79">		assertEquals(&quot;quote.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L80">		outContent.reset();</span>
+<span class="fc" id="L81">		Printtokens2.print_spec_symbol(&quot;`&quot;);</span>
+<span class="fc" id="L82">		assertEquals(&quot;bquote.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L83">		outContent.reset();</span>
+<span class="fc" id="L84">		Printtokens2.print_spec_symbol(&quot;`&quot;);</span>
+<span class="fc" id="L85">		assertEquals(&quot;bquote.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L86">		outContent.reset();</span>
+<span class="fc" id="L87">		Printtokens2.print_spec_symbol(&quot;a&quot;);</span>
+<span class="fc" id="L88">		assertEquals(&quot;&quot;, outContent.toString());</span>
+<span class="fc" id="L89">		Printtokens2.print_spec_symbol(&quot;1&quot;);</span>
+<span class="fc" id="L90">		assertEquals(&quot;&quot;, outContent.toString());</span>
+<span class="fc" id="L91">	}</span>
+	@Test
+	public void test_is_identifier() {
+<span class="fc" id="L94">		assertTrue(Printtokens2.is_identifier(&quot;asd&quot;));</span>
+<span class="fc" id="L95">		assertTrue(Printtokens2.is_identifier(&quot;a1sd&quot;));</span>
+<span class="fc" id="L96">		assertTrue(Printtokens2.is_identifier(&quot;as2d&quot;));</span>
+<span class="fc" id="L97">		assertTrue(Printtokens2.is_identifier(&quot;wer566666&quot; + &quot;ddf&quot;));</span>
+<span class="fc" id="L98">		assertFalse(Printtokens2.is_identifier(&quot;1qwqwq&quot;));</span>
+<span class="fc" id="L99">		assertFalse(Printtokens2.is_identifier(&quot;a_&quot;));</span>
+<span class="fc" id="L100">		assertFalse(Printtokens2.is_identifier(String.valueOf(17)));</span>
+<span class="fc" id="L101">		assertFalse(Printtokens2.is_identifier(&quot;*&quot;));</span>
+<span class="fc" id="L102">	}</span>
+	@Test
+	public void test_is_str_constant() {
+<span class="fc" id="L105">		assertTrue(Printtokens2.is_str_constant(&quot;\&quot;asd\&quot;&quot;));</span>
+<span class="fc" id="L106">		assertTrue(Printtokens2.is_str_constant(&quot;\&quot;a1sd\&quot;&quot;));</span>
+<span class="fc" id="L107">		assertTrue(Printtokens2.is_str_constant(&quot;\&quot;as2d\&quot;&quot;));</span>
+<span class="fc" id="L108">		assertFalse(Printtokens2.is_str_constant(&quot;\&quot;wer56666\&quot;6&quot; + &quot;ddf&quot;));</span>
+<span class="fc" id="L109">		assertFalse(Printtokens2.is_str_constant(&quot;\&quot;1qwqw\&quot;q&quot;));</span>
+<span class="fc" id="L110">		assertFalse(Printtokens2.is_str_constant(&quot;\&quot;a_&quot;));</span>
+<span class="fc" id="L111">		assertFalse(Printtokens2.is_str_constant(String.valueOf(17)));</span>
+<span class="fc" id="L112">		assertTrue(Printtokens2.is_str_constant(&quot;\&quot;*\&quot;&quot;));</span>
+<span class="fc" id="L113">	}</span>
+	@Test
+	public void test_is_num_constant() {
+		try {
+<span class="fc" id="L117">		assertTrue(Printtokens2.is_num_constant(&quot;15&quot;));</span>
+<span class="fc" id="L118">		assertFalse(Printtokens2.is_num_constant(&quot;a1sd&quot;));</span>
+<span class="fc" id="L119">		assertFalse(Printtokens2.is_num_constant(&quot;\&quot;as2d&quot;));</span>
+<span class="fc" id="L120">		assertFalse(Printtokens2.is_num_constant(&quot;\&quot;wer56666\&quot;6&quot; + &quot;ddf&quot;));</span>
+<span class="fc" id="L121">		assertFalse(Printtokens2.is_num_constant(&quot;\&quot;1qwqw\&quot;q&quot;));</span>
+<span class="fc" id="L122">		assertFalse(Printtokens2.is_num_constant(&quot;\&quot;a_&quot;));</span>
+<span class="fc" id="L123">		assertTrue(Printtokens2.is_num_constant(String.valueOf(17)));</span>
+<span class="fc" id="L124">		assertFalse(Printtokens2.is_num_constant(&quot;\&quot;*\&quot;&quot;));</span>
+<span class="pc" id="L125">		} catch (Exception e) {</span>
+<span class="nc" id="L126">			fail(&quot;Fault detected: &quot; + e);</span>
+		}
+<span class="fc" id="L128">	}</span>
+	@Test
+	public void test_is_char_constant() {
+<span class="fc" id="L131">		assertTrue(Printtokens2.is_char_constant(&quot;#a&quot;));</span>
+<span class="fc" id="L132">		assertFalse(Printtokens2.is_char_constant(&quot;a1sd&quot;));</span>
+<span class="fc" id="L133">		assertFalse(Printtokens2.is_char_constant(&quot;#as2d&quot;));</span>
+<span class="fc" id="L134">		assertFalse(Printtokens2.is_char_constant(&quot;\&quot;wer56666\&quot;6&quot; + &quot;ddf&quot;));</span>
+<span class="fc" id="L135">		assertFalse(Printtokens2.is_char_constant(&quot;#1qwqw\&quot;q&quot;));</span>
+<span class="fc" id="L136">		assertFalse(Printtokens2.is_char_constant(&quot;#a_&quot;));</span>
+<span class="fc" id="L137">		assertTrue(Printtokens2.is_char_constant(&quot;#g&quot;));</span>
+<span class="fc" id="L138">	}</span>
+	@Test
+	public void test_is_keyword() {
+<span class="fc" id="L141">		String[] chars = new String[]{&quot;and&quot;, &quot;or&quot;, &quot;if&quot;, &quot;xor&quot;, &quot;lambda&quot;, &quot;=&gt;&quot;};</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">		for (String c : chars) {</span>
+<span class="fc" id="L143">			Assert.assertTrue(Printtokens2.is_keyword(c));</span>
+		}
+<span class="fc" id="L145">		Assert.assertFalse(Printtokens2.is_keyword(&quot;dd&quot;));</span>
+<span class="fc" id="L146">	}</span>
+	@Test
+	public void test_is_comment() {
+<span class="fc" id="L149">		assertTrue(Printtokens2.is_comment(&quot;;#a&quot;));</span>
+<span class="fc" id="L150">		assertFalse(Printtokens2.is_comment(&quot;a1sd&quot;));</span>
+<span class="fc" id="L151">		assertFalse(Printtokens2.is_comment(&quot;#as2d&quot;));</span>
+<span class="fc" id="L152">		assertTrue(Printtokens2.is_comment(&quot;;\&quot;wer56666\&quot;6&quot; + &quot;ddf&quot;));</span>
+<span class="fc" id="L153">		assertFalse(Printtokens2.is_comment(&quot;#1qwqw\&quot;q&quot;));</span>
+<span class="fc" id="L154">		assertTrue(Printtokens2.is_comment(&quot;;a_&quot;));</span>
+<span class="fc" id="L155">		assertTrue(Printtokens2.is_comment(&quot;;g&quot;));</span>
+<span class="fc" id="L156">	}</span>
+	@Test
+	public void test_print_token() {
+<span class="fc" id="L159">		obj.print_token(&quot;@edwe2236725&quot;);</span>
+<span class="fc" id="L160">		assertEquals(&quot;error,\&quot;@edwe2236725\&quot;.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L161">		outContent.reset();</span>
+<span class="fc" id="L162">		obj.print_token(&quot;xor&quot;);</span>
+<span class="fc" id="L163">		assertEquals(&quot;keyword,\&quot;xor\&quot;.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L164">		outContent.reset();</span>
+<span class="fc" id="L165">		obj.print_token(&quot;(&quot;);</span>
+<span class="fc" id="L166">		assertEquals(&quot;lparen.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L167">		outContent.reset();</span>
+<span class="fc" id="L168">		obj.print_token(&quot;ret3&quot;);</span>
+<span class="fc" id="L169">		assertEquals(&quot;identifier,\&quot;ret3\&quot;.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L170">		outContent.reset();</span>
+<span class="fc" id="L171">		obj.print_token(&quot;45&quot;);</span>
+<span class="fc" id="L172">		assertEquals(&quot;numeric,45.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L173">		outContent.reset();</span>
+<span class="fc" id="L174">		obj.print_token(&quot;\&quot;lparen.\\n\&quot;&quot;);</span>
+<span class="fc" id="L175">		assertEquals(&quot;string,\&quot;lparen.\\n\&quot;.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L176">		outContent.reset();</span>
+<span class="fc" id="L177">		obj.print_token(&quot;#a&quot;);</span>
+<span class="fc" id="L178">		assertEquals(&quot;character,\&quot;a\&quot;.\n&quot;, outContent.toString());</span>
+<span class="fc" id="L179">		outContent.reset();</span>
+<span class="fc" id="L180">	}</span>
+	@Test
+	public void test_token_type() {
+<span class="fc" id="L183">		assertEquals(0, obj.token_type(&quot;@edwe2236725&quot;));</span>
+<span class="fc" id="L184">		assertEquals(obj.token_type(&quot;xor&quot;), 1);</span>
+<span class="fc" id="L185">		assertEquals(obj.token_type(&quot;(&quot;), 2);</span>
+<span class="fc" id="L186">		assertEquals(obj.token_type(&quot;ret3&quot;), 3);</span>
+<span class="fc" id="L187">		assertEquals(obj.token_type(&quot;45&quot;), 41);</span>
+<span class="fc" id="L188">		assertEquals(obj.token_type(&quot;\&quot;lparen.\\n\&quot;&quot;), 42);</span>
+<span class="fc" id="L189">		assertEquals(obj.token_type(&quot;#a&quot;), 43);</span>
+<span class="fc" id="L190">		assertEquals(obj.token_type(&quot;;a&quot;), 5);</span>
+<span class="fc" id="L191">	}</span>
+	@Test
+	public void test_is_token_end() {
+<span class="fc" id="L194">		assertTrue(obj.is_token_end(0, '\n'));</span>
+<span class="fc" id="L195">		assertTrue(obj.is_token_end(1, '\r'));</span>
+<span class="fc" id="L196">		assertTrue(obj.is_token_end(-1, -1));</span>
+<span class="fc" id="L197">		assertTrue(obj.is_token_end(1, '&quot;'));</span>
+<span class="fc" id="L198">		assertTrue(obj.is_token_end(2, '\t'));</span>
+<span class="fc" id="L199">		assertTrue(obj.is_token_end(1, 59));</span>
+<span class="fc" id="L200">		assertTrue(obj.is_token_end(1, ' '));</span>
+<span class="fc" id="L201">		assertTrue(obj.is_token_end(3, '('));</span>
+<span class="fc" id="L202">		assertFalse(obj.is_token_end(1, 't'));</span>
+<span class="fc" id="L203">		assertFalse(obj.is_token_end(1, '('));</span>
+<span class="fc" id="L204">	}</span>
+	@Test
+	public void test_get_token() {
+
+<span class="fc" id="L208">		StringReader sr = new StringReader(&quot;first&quot;);</span>
+<span class="fc" id="L209">		BufferedReader bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L210">		StringBuilder sb = new StringBuilder();</span>
+<span class="fc" id="L211">		sb.append(&quot;first&quot;);</span>
+<span class="fc" id="L212">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L214">		sr = new StringReader(&quot;&quot;);</span>
+<span class="fc" id="L215">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L216">		sb.setLength(0);</span>
+<span class="fc" id="L217">		assertEquals(null,obj.get_token(bfr));</span>
+
+<span class="fc" id="L219">		sr = new StringReader(&quot; &quot;);</span>
+<span class="fc" id="L220">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L221">		assertEquals(null, obj.get_token(bfr));</span>
+
+<span class="fc" id="L223">		sr = new StringReader(&quot;\n&quot;);</span>
+<span class="fc" id="L224">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L225">		assertEquals(null, obj.get_token(bfr));</span>
+
+<span class="fc" id="L227">		sr = new StringReader(&quot;\r&quot;);</span>
+<span class="fc" id="L228">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L229">		assertEquals(null, obj.get_token(bfr));</span>
+
+<span class="fc" id="L231">		sr = new StringReader(&quot; b&quot;);</span>
+<span class="fc" id="L232">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L233">		sb.append(&quot;b&quot;);</span>
+<span class="fc" id="L234">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L236">		sr = new StringReader(&quot;b&quot;);</span>
+<span class="fc" id="L237">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L238">		sb.setLength(0);</span>
+<span class="fc" id="L239">		sb.append(&quot;b&quot;);</span>
+<span class="fc" id="L240">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L242">		sr = new StringReader(&quot;,&quot;);</span>
+<span class="fc" id="L243">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L244">		sb.setLength(0);</span>
+<span class="fc" id="L245">		sb.append(&quot;,&quot;);</span>
+<span class="fc" id="L246">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L248">		sr = new StringReader(&quot;\&quot;b\&quot;&quot;);</span>
+<span class="fc" id="L249">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L250">		sb.setLength(0);</span>
+<span class="fc" id="L251">		sb.append(&quot;\&quot;b\&quot;&quot;);</span>
+<span class="fc" id="L252">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L254">		sr = new StringReader(&quot;;comment&quot;);</span>
+<span class="fc" id="L255">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L256">		sb.setLength(0);</span>
+<span class="fc" id="L257">		sb.append(&quot;;comment&quot;);</span>
+<span class="fc" id="L258">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L260">		sr = new StringReader(&quot;first,&quot;);</span>
+<span class="fc" id="L261">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L262">		sb.setLength(0);</span>
+<span class="fc" id="L263">		sb.append(&quot;first&quot;);</span>
+<span class="fc" id="L264">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+
+<span class="fc" id="L266">		sr = new StringReader(&quot;first;&quot;);</span>
+<span class="fc" id="L267">		bfr = new BufferedReader(sr);	</span>
+<span class="fc" id="L268">		sb.setLength(0);</span>
+<span class="fc" id="L269">		sb.append(&quot;first&quot;);</span>
+<span class="fc" id="L270">		assertEquals(sb.toString(), obj.get_token(bfr).toString());</span>
+<span class="fc" id="L271">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span>JUnitTesitngCFG (May 3, 2018 5:55:13 PM)</div></body></html>

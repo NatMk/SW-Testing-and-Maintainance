@@ -1,0 +1,2 @@
+The only fault I can come up with is on line 94: if(fgets(stream_ptr->stream+START,80-START,stream_ptr->fp) == NULL)
+this needs to be modified to if(fgets(stream_ptr->stream+START,80-START,stream_ptr->fp) != NULL) in order to resolve the fault. 
